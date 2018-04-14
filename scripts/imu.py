@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import division
 import math
 import serial
 import struct
@@ -15,12 +16,12 @@ def imuSender():
     gRange = 250  # +/- degrees/second
     GACCEL = 9.80655  # m/s^2
     DEG_TO_RAD = math.pi / 180
-    ser = serial.Serial('/dev/ttyUSB0', 57600)  # open serial port
+    ser = serial.Serial('/dev/backup_imu', 57600)  # open serial port
     pub = rospy.Publisher('imu_backup', Imu, queue_size=10)
     rospy.init_node('imub')
     rate = rospy.Rate(100)  # 100Hz
     msg = Imu()
-    msg.header.frame_id = 1
+    msg.header.frame_id = 'imu_link'
     inRaw = 0
     print('begin')
     while not rospy.is_shutdown():
@@ -62,7 +63,7 @@ def imuSender():
 
         msg.angular_velocity.x = accels[0]
         msg.angular_velocity.y = accels[1]
-        msg.angular_velocity.y = accels[2]
+        msg.angular_velocity.z = accels[2]
 
         pub.publish(msg)
         rate.sleep()
