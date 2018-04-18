@@ -65,7 +65,7 @@ void setup()
 
     packetSize = mpu.dmpGetFIFOPacketSize();
 
-   // attachInterrupt(digitalPinToInterrupt(2), dmpDataReady, RISING);
+   attachInterrupt(digitalPinToInterrupt(2), dmpDataReady, RISING);
    Serial.begin(57600);
 }
 
@@ -79,6 +79,11 @@ void loop()
 
     mpuIntStatus = mpu.getIntStatus();
     fifoCount = mpu.getFIFOCount();
+
+    while(!mpuInterrupt)
+    {
+      //This holds everything so we can make sure we have data before tryig to talk to the IMU
+    }
 
      if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
         mpu.resetFIFO();
@@ -126,8 +131,8 @@ void loop()
         Serial.write(sendingReference,2);
         sendingReference = (byte*) &gz;
         Serial.write(sendingReference,2);      
-        delay(10);
-
+        
+        mpuInterrupt = false;
     }
     
 }
