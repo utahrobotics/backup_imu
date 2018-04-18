@@ -19,7 +19,7 @@ def imuSender():
     ser = serial.Serial('/dev/backup_imu', 57600)  # open serial port
     pub = rospy.Publisher('imu_backup', Imu, queue_size=10)
     rospy.init_node('imub')
-    rate = rospy.Rate(100)  # 100Hz
+    
     msg = Imu()
     msg.header.frame_id = 'imu_link'
     inRaw = 0
@@ -66,7 +66,7 @@ def imuSender():
         msg.angular_velocity.z = accels[2]
 
         pub.publish(msg)
-        rate.sleep()
+        
 
 
 if __name__ == '__main__':
